@@ -309,6 +309,33 @@ function TypewriterText({ text, delay = 0, speed = 80 }) {
 function FlipCard({ project, index }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect if device is mobile/touch device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Handle touch start - flips immediately on any touch (mobile only)
+  const handleTouchStart = (e) => {
+    if (isMobile) {
+      e.preventDefault(); // Prevent onClick from firing after touch
+      setIsFlipped(!isFlipped);
+    }
+  };
+
+  // Handle click (desktop only)
+  const handleClick = () => {
+    if (!isMobile) {
+      setIsFlipped(!isFlipped);
+    }
+  };
 
   return (
     <>
@@ -325,24 +352,30 @@ function FlipCard({ project, index }) {
           animate={{ rotateY: isFlipped ? 180 : 0 }}
           transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
           style={{ transformStyle: 'preserve-3d' }}
-          onHoverStart={() => setIsFlipped(true)}
-          onHoverEnd={() => setIsFlipped(false)}
-          whileHover={{ scale: 1.05 }}
+          // Desktop: hover to flip
+          onHoverStart={() => !isMobile && setIsFlipped(true)}
+          onHoverEnd={() => !isMobile && setIsFlipped(false)}
+          // Mobile: touch to flip (prevents double firing)
+          onTouchStart={handleTouchStart}
+          // Desktop fallback: click
+          onClick={handleClick}
+          whileHover={!isMobile ? { scale: 1.05 } : {}}
+          whileTap={isMobile ? { scale: 0.98 } : {}}
         >
           {/* FRONT FACE */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-xl rounded-3xl p-8 border border-purple-500/30 shadow-xl overflow-hidden"
+            className="absolute inset-0 bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-purple-500/30 shadow-xl overflow-hidden"
             style={{ backfaceVisibility: 'hidden' }}
           >
             <div className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-20`} />
             
             <div className="relative z-10 h-full flex flex-col">
-              <div className="text-6xl mb-4">{project.icon}</div>
-              <h3 className="text-2xl font-bold mb-2 text-purple-200">
+              <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">{project.icon}</div>
+              <h3 className="text-xl sm:text-2xl font-bold mb-2 text-purple-200">
                 {project.title}
               </h3>
-              <p className="text-sm text-purple-400 mb-4 font-semibold">{project.period}</p>
-              <p className="text-gray-300 mb-6 leading-relaxed flex-grow">
+              <p className="text-xs sm:text-sm text-purple-400 mb-3 sm:mb-4 font-semibold">{project.period}</p>
+              <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6 leading-relaxed flex-grow">
                 {project.description.substring(0, 100)}...
               </p>
               
@@ -350,19 +383,28 @@ function FlipCard({ project, index }) {
                 {project.tech.slice(0, 3).map((tech) => (
                   <span 
                     key={tech}
-                    className="bg-purple-500/30 px-3 py-1 rounded-full text-xs text-purple-200 border border-purple-400/30 font-medium"
+                    className="bg-purple-500/30 px-2 sm:px-3 py-1 rounded-full text-xs text-purple-200 border border-purple-400/30 font-medium"
                   >
                     {tech}
                   </span>
                 ))}
                 <span className="text-purple-300 text-xs flex items-center">+{project.tech.length - 3} more</span>
               </div>
+              
+              {/* Show tap instruction only on mobile */}
+              {isMobile && (
+                <div className="mt-4 text-center">
+                  <span className="text-xs text-purple-400/70 animate-pulse">
+                    👆 Touch to flip
+                  </span>
+                </div>
+              )}
             </div>
           </motion.div>
 
           {/* BACK FACE */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-br from-cyan-900/50 to-purple-900/50 backdrop-blur-xl rounded-3xl p-8 border border-cyan-500/30 shadow-xl overflow-hidden"
+            className="absolute inset-0 bg-gradient-to-br from-cyan-900/50 to-purple-900/50 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-cyan-500/30 shadow-xl overflow-hidden"
             style={{ 
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)'
@@ -370,17 +412,17 @@ function FlipCard({ project, index }) {
           >
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div>
-                <h3 className="text-2xl font-bold mb-4 text-cyan-200">
+                <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-cyan-200">
                   Tech Stack
                 </h3>
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4 sm:mb-6 max-h-[200px] overflow-y-auto">
                   {project.tech.map((tech) => (
                     <motion.span
                       key={tech}
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: Math.random() * 0.3 }}
-                      className="bg-cyan-500/30 px-3 py-2 rounded-full text-sm text-cyan-100 border border-cyan-400/30 font-medium"
+                      className="bg-cyan-500/30 px-2 sm:px-3 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm text-cyan-100 border border-cyan-400/30 font-medium"
                     >
                       {tech}
                     </motion.span>
@@ -388,15 +430,35 @@ function FlipCard({ project, index }) {
                 </div>
               </div>
               
-              <MagneticButton
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setIsFlipped(false);
-                }}
-                className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2"
-              >
-                View Full Details <ExternalLink size={18} />
-              </MagneticButton>
+              <div className="space-y-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsModalOpen(true);
+                    setIsFlipped(false);
+                  }}
+                  onTouchStart={(e) => {
+                    e.stopPropagation();
+                  }}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    setIsModalOpen(true);
+                    setIsFlipped(false);
+                  }}
+                  className="w-full bg-gradient-to-r from-cyan-600 to-purple-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:from-cyan-700 hover:to-purple-700 transition-all"
+                >
+                  View Full Details <ExternalLink size={16} className="sm:w-[18px] sm:h-[18px]" />
+                </button>
+                
+                {/* Show flip back button only on mobile */}
+                {isMobile && (
+                  <div className="text-center">
+                    <span className="text-xs text-cyan-400/70 animate-pulse">
+                      👆 Touch again to flip back
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         </motion.div>
@@ -409,7 +471,7 @@ function FlipCard({ project, index }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-6"
+            className="fixed inset-0 bg-black/80 backdrop-blur-xl z-50 flex items-center justify-center p-4 sm:p-6"
             onClick={() => setIsModalOpen(false)}
           >
             <motion.div
@@ -417,48 +479,48 @@ function FlipCard({ project, index }) {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.8, y: 50 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="bg-gradient-to-br from-purple-900/90 to-pink-900/90 backdrop-blur-2xl rounded-3xl p-12 border-2 border-purple-500/50 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
+              className="bg-gradient-to-br from-purple-900/90 to-pink-900/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-12 border-2 border-purple-500/50 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="absolute top-6 right-6 p-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-full transition-colors"
+                className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 bg-purple-500/20 hover:bg-purple-500/40 rounded-full transition-colors"
               >
                 <X size={24} />
               </button>
 
-              <div className="text-6xl mb-6">{project.icon}</div>
-              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+              <div className="text-5xl sm:text-6xl mb-4 sm:mb-6">{project.icon}</div>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-3 sm:mb-4 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
                 {project.title}
               </h2>
-              <p className="text-purple-400 font-semibold mb-6">{project.period}</p>
-              <p className="text-xl text-gray-200 leading-relaxed mb-8">{project.description}</p>
+              <p className="text-purple-400 font-semibold mb-4 sm:mb-6">{project.period}</p>
+              <p className="text-lg sm:text-xl text-gray-200 leading-relaxed mb-6 sm:mb-8">{project.description}</p>
               
-              <h3 className="text-2xl font-bold mb-4 text-purple-300">Technologies Used</h3>
-              <div className="flex flex-wrap gap-3 mb-8">
+              <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-purple-300">Technologies Used</h3>
+              <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8">
                 {project.tech.map((tech) => (
                   <span 
                     key={tech}
-                    className="bg-purple-500/30 px-4 py-2 rounded-full text-sm text-purple-100 border border-purple-400/30 font-medium"
+                    className="bg-purple-500/30 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm text-purple-100 border border-purple-400/30 font-medium"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
 
-              <div className="flex gap-4">
-                <MagneticButton
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <a
                   href={project.sourceCode}
-                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 hover:from-purple-700 hover:to-pink-700 transition-all"
                 >
-                  <Github size={20} /> View Code
-                </MagneticButton>
-                <MagneticButton
+                  <Github size={18} className="sm:w-[20px] sm:h-[20px]" /> View Code
+                </a>
+                <a
                   href={project.livedemo}
-                  className="flex-1 border-2 border-purple-400 hover:bg-purple-400/20 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="flex-1 border-2 border-purple-400 hover:bg-purple-400/20 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all"
                 >
-                  <ExternalLink size={20} /> Live Demo
-                </MagneticButton>
+                  <ExternalLink size={18} className="sm:w-[20px] sm:h-[20px]" /> Live Demo
+                </a>
               </div>
             </motion.div>
           </motion.div>
@@ -467,6 +529,8 @@ function FlipCard({ project, index }) {
     </>
   );
 }
+
+
 
 // ==================== MAIN PORTFOLIO ====================
 export default function Portfolio() {
