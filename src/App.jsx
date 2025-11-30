@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, useSpring, useVelocity, AnimatePresenc
 import { Send, Github, Linkedin, Code, Mail, Phone, Download, ExternalLink, ChevronDown, Zap, Star, X } from 'lucide-react';
 import * as THREE from 'three';
 import { getKey } from './contstants';
+import { code, source } from 'framer-motion/client';
 
 // ==================== INTERACTIVE PARTICLES WITH CURSOR ATTRACTION ====================
 function InteractiveParticles() {
@@ -447,13 +448,13 @@ function FlipCard({ project, index }) {
 
               <div className="flex gap-4">
                 <MagneticButton
-                  href="#"
+                  href={project.sourceCode}
                   className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <Github size={20} /> View Code
                 </MagneticButton>
                 <MagneticButton
-                  href="#"
+                  href={project.livedemo}
                   className="flex-1 border-2 border-purple-400 hover:bg-purple-400/20 px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <ExternalLink size={20} /> Live Demo
@@ -472,6 +473,7 @@ export default function Portfolio() {
   const [activeSection, setActiveSection] = useState('hero');
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
@@ -569,7 +571,9 @@ export default function Portfolio() {
       description: 'Enterprise-grade automation infrastructure on AWS with VPC, EC2, EKS cluster orchestration. Implemented GitOps workflows with ArgoCD and Jenkins CI/CD pipelines reducing deployment time by 70%.',
       tech: ['AWS', 'Terraform', 'Jenkins', 'ArgoCD', 'Docker', 'Kubernetes', 'GitHub Actions'],
       icon: '🚀',
-      gradient: 'from-purple-500 to-pink-500'
+      gradient: 'from-purple-500 to-pink-500',
+      sourceCode: 'https://github.com/dsumanta/AI-Project-Management',
+      livedemo:'https://www.figma.com/design/VRx44fZwg18HtpwX1ARkdv/AWS-Diagrams--Community-?node-id=36350-170&m=dev&t=CVVxmv0UMJjhBAsf-1'
     },
     {
       title: 'Nuraflow PM',
@@ -577,7 +581,9 @@ export default function Portfolio() {
       description: 'AI-powered project management platform with GraphQL microservices architecture. RBAC implementation elevated security by 15% and reduced manual workflows by 60%.',
       tech: ['NestJS', 'GraphQL', 'Prisma', 'PostgreSQL', 'React', 'Docker', 'Redis'],
       icon: '⚡',
-      gradient: 'from-blue-500 to-cyan-500'
+      gradient: 'from-blue-500 to-cyan-500',
+      sourceCode: 'https://github.com/dsumanta/AI-Project-Management',
+      livedemo: 'https://nuraflow.in'
     },
     {
       title: 'Dcart E-commerce Platform',
@@ -585,7 +591,9 @@ export default function Portfolio() {
       description: 'High-performance e-commerce solution serving 1.2k MAU with 200 SKUs. Stripe webhook integration achieved 99.5% payment capture rate and reduced cart abandonment by 17%.',
       tech: ['React', 'Node.js', 'MongoDB', 'Stripe', 'JWT', 'Docker', 'AWS S3'],
       icon: '🛍️',
-      gradient: 'from-green-500 to-emerald-500'
+      gradient: 'from-green-500 to-emerald-500',
+      sourceCode: 'https://github.com/dsumanta/Ecommerce-Website',
+      livedemo: 'https://shop.nuraflow.in'
     }
   ];
 
@@ -596,9 +604,9 @@ export default function Portfolio() {
       period: 'June 2024 - Present',
       location: 'Hyderabad, India',
       highlights: [
-        'Architected ARN Link Generation microservice reducing manual creation time by 40%',
-        'Deployed interactive SOA portal with sub-5-second statement retrieval (from minutes)',
-        'Standardized CI/CD pipelines across 8 AMC clients, cutting rollbacks by 40%'
+        'Developed an ARN Link Generation application that reducing manual creation time by 40%',
+        'Developed an interactive Statement of Account which provides a visual summary of transactions and capital gains, exort the report in PDF format',
+        'Develop new features and optimize performance of existing Distributor portal of AMC including KFinKar web applications'
       ],
       icon: '💼'
     },
@@ -608,9 +616,8 @@ export default function Portfolio() {
       period: 'Nov 2023 - June 2024',
       location: 'Remote, India',
       highlights: [
-        'Redesigned investor dashboard reducing authentication errors by 35%',
-        'Optimized third-party API integrations cutting production incidents by 28%',
-        'Improved page load performance from 1.6s to 900ms (p95 latency)'
+        'Revamped investor portal dashboard/login page reduce login errors by 35% and increased successful login sessions',
+        'Resolved the issuees of investor portal increase the performance by 25% and improved user experince by 30%',
       ],
       icon: '🎯'
     }
@@ -632,52 +639,147 @@ export default function Portfolio() {
       />
 
       {/* Enhanced Navigation */}
-      <motion.nav 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: 'spring', stiffness: 100, damping: 20 }}
-        className="fixed top-0 w-full bg-slate-950/40 backdrop-blur-xl z-40 border-b border-purple-500/20"
+        <motion.nav 
+  initial={{ y: -100 }}
+  animate={{ y: 0 }}
+  transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+  className="fixed top-0 w-full bg-slate-950/40 backdrop-blur-xl z-40 border-b border-purple-500/20"
+>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+    {/* Logo */}
+    <motion.h1 
+      className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent shrink-0"
+      whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+      transition={{ duration: 0.5 }}
+    >
+      &lt;SD /&gt;
+    </motion.h1>
+
+    {/* Desktop Menu */}
+    <div className="hidden lg:flex gap-8 items-center">
+      {['About', 'Skills', 'Experience', 'Projects', 'Contact'].map((item) => (
+        <motion.a
+          key={item}
+          href={`#${item.toLowerCase()}`}
+          className={`relative transition-colors font-medium ${
+            activeSection === item.toLowerCase() 
+              ? 'text-purple-400' 
+              : 'text-gray-300 hover:text-white'
+          }`}
+          whileHover={{ y: -2 }}
+          transition={{ type: 'spring', stiffness: 400 }}
+        >
+          {item}
+          {activeSection === item.toLowerCase() && (
+            <motion.div
+              layoutId="activeSection"
+              className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500"
+              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            />
+          )}
+        </motion.a>
+      ))}
+      <MagneticButton
+        href="/resume.pdf"
+        className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full font-semibold text-sm shadow-lg shadow-purple-500/50"
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <motion.h1 
-            className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent"
-            whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
-            transition={{ duration: 0.5 }}
+        <Download size={16} /> Resume
+      </MagneticButton>
+    </div>
+
+    {/* Mobile Hamburger Button */}
+    <motion.button
+      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+      className="lg:hidden p-2 text-purple-400 hover:text-purple-300 transition-colors"
+      whileTap={{ scale: 0.95 }}
+    >
+      <AnimatePresence mode="wait">
+        {isMobileMenuOpen ? (
+          <motion.div
+            key="close"
+            initial={{ rotate: -90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: 90, opacity: 0 }}
+            transition={{ duration: 0.2 }}
           >
-            &lt;SD /&gt;
-          </motion.h1>
-          <div className="flex gap-8 items-center">
-            {['About', 'Skills', 'Experience', 'Projects', 'Contact'].map((item) => (
-              <motion.a
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className={`relative transition-colors font-medium ${
-                  activeSection === item.toLowerCase() 
-                    ? 'text-purple-400' 
-                    : 'text-gray-300 hover:text-white'
-                }`}
-                whileHover={{ y: -2 }}
-                transition={{ type: 'spring', stiffness: 400 }}
-              >
-                {item}
-                {activeSection === item.toLowerCase() && (
-                  <motion.div
-                    layoutId="activeSection"
-                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-purple-500 to-pink-500"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  />
-                )}
-              </motion.a>
-            ))}
-            <MagneticButton
-              href="/resume.pdf"
-              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full font-semibold text-sm shadow-lg shadow-purple-500/50"
+            <X size={28} />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="menu"
+            initial={{ rotate: 90, opacity: 0 }}
+            animate={{ rotate: 0, opacity: 1 }}
+            exit={{ rotate: -90, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
+  </div>
+
+  {/* Mobile Menu Dropdown */}
+  <AnimatePresence>
+    {isMobileMenuOpen && (
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: 'auto', opacity: 1 }}
+        exit={{ height: 0, opacity: 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="lg:hidden overflow-hidden bg-slate-950/95 backdrop-blur-xl border-t border-purple-500/20"
+      >
+        <div className="px-6 py-4 space-y-4">
+          {['About', 'Skills', 'Experience', 'Projects', 'Contact'].map((item, idx) => (
+            <motion.a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: idx * 0.1 }}
+              className={`block text-lg font-medium transition-colors py-2 ${
+                activeSection === item.toLowerCase() 
+                  ? 'text-purple-400' 
+                  : 'text-gray-300 hover:text-white'
+              }`}
             >
-              <Download size={16} /> Resume
-            </MagneticButton>
-          </div>
+              {item}
+              {activeSection === item.toLowerCase() && (
+                <motion.div
+                  layoutId="activeSectionMobile"
+                  className="h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 mt-1"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </motion.a>
+          ))}
+          
+          {/* Resume Button in Mobile Menu */}
+          <motion.div
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="pt-4 border-t border-purple-500/20"
+          >
+            <a
+              href="/resume.pdf"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-3 rounded-full font-semibold text-sm shadow-lg shadow-purple-500/50 w-full"
+            >
+              <Download size={16} /> Download Resume
+            </a>
+          </motion.div>
         </div>
-      </motion.nav>
+      </motion.div>
+    )}
+  </AnimatePresence>
+</motion.nav>
+
+
 
       {/* HERO SECTION WITH PROFILE IMAGE */}
       <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden pt-24">
@@ -788,7 +890,7 @@ export default function Portfolio() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.8 }}
             >
-              Backend-Focused Full-Stack Engineer
+              Full-Stack Developer
             </motion.p>
             
             <motion.p 
@@ -929,7 +1031,7 @@ export default function Portfolio() {
               viewport={{ once: false, amount: 0.3 }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 100 }}
             >
-              I'm a <span className="text-purple-400 font-bold">Full-Stack Developer</span> with <span className="text-pink-400 font-bold">2+ years</span> of production experience crafting scalable REST and GraphQL APIs using Node.js, PostgreSQL, and React. My current focus is on <span className="text-cyan-400 font-bold">cloud infrastructure and DevOps automation</span>, where I build CI/CD pipelines with Jenkins, Docker, and Kubernetes to streamline deployments from dev to production.
+              I'm a <span className="text-purple-400 font-bold">Full-Stack Developer</span> with <span className="text-pink-400 font-bold">2+ years</span> of real-world experience building REST and GraphQL APIs with Node.js, PostgreSQL, and React. Recently, I’ve also been working more on <span className="text-cyan-400 font-bold">cloud infrastructure and DevOps automation</span>—setting up CI/CD pipelines using Jenkins, Docker, and Kubernetes to make deployments smoother across development and production environments.
             </motion.p>
             
             <motion.div 
