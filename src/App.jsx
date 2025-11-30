@@ -523,6 +523,7 @@ function FlipCard({ project, index }) {
                 </a>
               </div>
             </motion.div>
+            
           </motion.div>
         )}
       </AnimatePresence>
