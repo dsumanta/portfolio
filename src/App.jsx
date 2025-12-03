@@ -637,7 +637,7 @@ export default function Portfolio() {
       tech: ['AWS', 'Terraform', 'Jenkins', 'ArgoCD', 'Docker', 'Kubernetes', 'GitHub Actions'],
       icon: '🚀',
       gradient: 'from-purple-500 to-pink-500',
-      sourceCode: 'https://github.com/dsumanta/AI-Project-Management',
+      sourceCode: 'https://github.com/dsumanta/CICDAutomation',
       livedemo:'https://www.figma.com/design/VRx44fZwg18HtpwX1ARkdv/AWS-Diagrams--Community-?node-id=36350-170&m=dev&t=CVVxmv0UMJjhBAsf-1'
     },
     {
@@ -690,9 +690,9 @@ export default function Portfolio() {
 
   const stats = [
     { label: 'Years Experience', value: 2, suffix: '+' },
-    { label: 'Projects Delivered', value: 15, suffix: '+' },
-    { label: 'Technologies Mastered', value: 25, suffix: '+' },
-    { label: 'Performance Improved', value: 60, suffix: '%' }
+    { label: 'Projects Delivered', value: 6, suffix: '+' },
+    { label: 'Technologies Worked on', value: 12, suffix: '+' },
+    { label: 'Performance Improved', value: 40, suffix: '%' }
   ];
 
   return (
@@ -1107,14 +1107,14 @@ export default function Portfolio() {
               transition={{ delay: 0.4, type: 'spring', stiffness: 100 }}
             >
               <motion.a 
-                href="mailto:dsumanta31746@gmail.com" 
+                href="mailto:sumanta.nuraflow.in" 
                 className="group flex items-center gap-3 text-purple-300 hover:text-purple-400 transition-colors"
                 whileHover={{ x: 10 }}
               >
                 <div className="p-3 bg-purple-500/20 rounded-full group-hover:bg-purple-500/30 transition-colors">
                   <Mail size={24} />
                 </div>
-                <span className="font-medium">dsumanta31746@gmail.com</span>
+                <span className="font-medium">sumanta.nuraflow.in</span>
               </motion.a>
               <motion.a 
                 href="tel:+917437987423" 
